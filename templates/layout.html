@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AI Hiring System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts + Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/4adad1b0e7.js" crossorigin="anonymous"></script>
+
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+    <!-- Particles -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    background: #0f172a;
+    color: white;
+}
+
+/* LIGHT MODE */
+body.light {
+    background: #f8fafc;
+    color: black;
+}
+
+body.light .card {
+    background: white;
+    color: black;
+}
+
+/* PARTICLES */
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    padding: 25px;
+    position: fixed;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px;
+    margin-bottom: 10px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateX(5px);
+}
+
+/* MAIN */
+.main {
+    margin-left: 260px;
+    width: 100%;
+    padding: 30px;
+}
+
+/* CARD */
+.card {
+    background: rgba(255,255,255,0.05);
+    padding: 25px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(20px);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* BUTTON */
+button {
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(45deg,#3b82f6,#6366f1);
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* INPUT */
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 12px;
+    background: rgba(255,255,255,0.08);
+    color: white;
+}
+
+/* LOADER */
+#loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255,255,255,0.2);
+    border-top: 5px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* TOAST */
+#toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #22c55e;
+    padding: 12px 20px;
+    border-radius: 8px;
+    display: none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="particles-js"></div>
+
+<!-- LOADER -->
+<div id="loader">
+    <div class="spinner"></div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>🚀 AI Hiring</h2>
+    <a href="/">🏠 Home</a>
+    <a href="/jobs">💼 Jobs</a>
+    <a href="/create-job">➕ Create Job</a>
+    <a href="/logout">🚪 Logout</a>
+
+    <br>
+    <button onclick="toggleTheme()">🌙 Toggle Mode</button>
+</div>
+
+<!-- MAIN -->
+<div class="main" data-aos="fade-up">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+<script>
+AOS.init();
+
+// LOADER
+window.addEventListener("load", () => {
+    document.getElementById("loader").style.display = "none";
+});
+
+// TOAST
+function showToast(msg){
+    let t = document.getElementById("toast");
+    t.innerText = msg;
+    t.style.display = "block";
+    setTimeout(()=>t.style.display="none",3000);
+}
+
+// THEME
+function toggleTheme(){
+    document.body.classList.toggle("light");
+}
+
+// PARTICLES
+particlesJS("particles-js", {
+  particles: {
+    number: { value: 40 },
+    size: { value: 3 },
+    move: { speed: 2 }
+  }
+});
+</script>
+
+</body>
+</html>

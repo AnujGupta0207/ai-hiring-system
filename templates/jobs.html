@@ -1,0 +1,181 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header h2 {
+    color: #1e3a8a;
+}
+
+/* CREATE BUTTON */
+.create-btn {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.create-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(37,99,235,0.3);
+}
+
+/* GRID */
+.jobs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* CARD */
+.job-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: 0.3s;
+    position: relative;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+}
+
+/* JOB TEXT */
+.job-text {
+    font-size: 14px;
+    color: #333;
+    height: 80px;
+    overflow: hidden;
+}
+
+/* ACTIONS */
+.actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+/* BUTTONS */
+.btn {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.view {
+    background: #2563eb;
+    color: white;
+}
+
+.upload {
+    background: #16a34a;
+    color: white;
+}
+
+.delete {
+    background: #ef4444;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+/* EMPTY */
+.empty {
+    text-align: center;
+    margin-top: 40px;
+    color: gray;
+}
+
+/* ANIMATION */
+.job-card {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {opacity:0; transform: translateY(10px);}
+    to {opacity:1; transform: translateY(0);}
+}
+</style>
+
+<div class="header">
+    <h2>📊 Job Dashboard</h2>
+
+    <a href="/create-job">
+        <button class="create-btn">
+            <i class="fa fa-plus"></i> Create Job
+        </button>
+    </a>
+</div>
+
+{% if jobs|length == 0 %}
+
+<div class="empty">
+    <h3>No Jobs Created Yet</h3>
+    <p>Create your first job to start analyzing resumes 🚀</p>
+</div>
+
+{% else %}
+
+<div class="jobs-grid">
+
+    {% for job in jobs %}
+    <div class="job-card">
+
+        <div class="job-text">
+            {{ job[1][:200] }}...
+        </div>
+
+        <div class="actions">
+
+            <a href="/upload/{{ job[0] }}">
+                <button class="btn upload">
+                    <i class="fa fa-upload"></i> Upload
+                </button>
+            </a>
+
+            <a href="/dashboard/{{ job[0] }}">
+                <button class="btn view">
+                    <i class="fa fa-chart-bar"></i> Dashboard
+                </button>
+            </a>
+
+            <a href="/delete-job/{{ job[0] }}">
+                <button class="btn delete">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </a>
+
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="card" data-aos="zoom-in">
+
+    <h1>🤖 Candidate Result</h1>
+
+    <!-- SCORE -->
+    <div style="text-align:center; margin:30px 0;">
+        <h2>Final Score</h2>
+        <h1><span id="score">0</span>/100</h1>
+
+        <span class="badge grade-{{ result.grade|replace('+','plus') }}">
+            {{ result.grade }}
+        </span>
+    </div>
+
+    <!-- PROGRESS -->
+    <h3>📊 Breakdown</h3>
+
+    <div class="bar"><span>Skill</span><div class="fill" data="{{ result.similarity_score }}"></div></div>
+    <div class="bar"><span>Experience</span><div class="fill" data="{{ result.experience_score }}"></div></div>
+    <div class="bar"><span>Education</span><div class="fill" data="{{ result.education_score }}"></div></div>
+    <div class="bar"><span>Project</span><div class="fill" data="{{ result.project_score }}"></div></div>
+
+    <br>
+
+    <a href="/"><button>🔄 Try Another</button></a>
+
+</div>
+
+<style>
+.bar {
+    margin:10px 0;
+}
+.fill {
+    height:10px;
+    background:#3b82f6;
+    width:0;
+    transition:1.5s;
+}
+</style>
+
+<script>
+
+// SCORE ANIMATION 🔥
+let finalScore = {{ result.final_score }};
+let count = 0;
+
+let counter = setInterval(() => {
+    count += Math.ceil(finalScore / 50);
+
+    if(count >= finalScore){
+        count = finalScore;
+        clearInterval(counter);
+    }
+
+    document.getElementById("score").innerText = count;
+}, 20);
+
+// PROGRESS ANIMATION
+document.querySelectorAll(".fill").forEach(bar => {
+    let val = bar.getAttribute("data");
+    setTimeout(()=>bar.style.width = val + "%",300);
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="card" data-aos="zoom-in">
+
+    <h1>🤖 AI Resume Analyzer</h1>
+    <p style="color:#94a3b8; margin-bottom:20px;">
+        Upload resumes and match them with job descriptions using AI
+    </p>
+
+    <form action="/analyze" method="POST" enctype="multipart/form-data">
+
+        <h3>📄 Job Description</h3>
+        <textarea name="job_description" rows="5"
+        placeholder="Paste Job Description here..." required></textarea>
+
+        <h3>📑 Resume Input</h3>
+        <textarea name="resume_text" rows="5"
+        placeholder="Paste resume text here..."></textarea>
+
+        <p style="text-align:center; margin:10px 0;">OR</p>
+
+        <input type="file" name="resume_file">
+
+        <br>
+
+        <button type="submit">🚀 Analyze Candidate</button>
+
+    </form>
+
+</div>
+
+{% endblock %}

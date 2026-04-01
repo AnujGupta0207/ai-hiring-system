@@ -1,0 +1,180 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- HEADER -->
+<div class="card" data-aos="fade-down">
+    <h1>📊 Hiring Dashboard</h1>
+    <p style="color:#94a3b8;">AI-powered candidate insights</p>
+</div>
+
+<!-- SEARCH 🔥 -->
+<input type="text" id="search" placeholder="🔍 Search candidate..."
+style="padding:10px; margin-bottom:15px; border-radius:10px;">
+
+<!-- STATS -->
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:20px;">
+
+    <div class="card" data-aos="zoom-in">
+        <h4>Total Candidates</h4>
+        <h2>{{ total_candidates }}</h2>
+    </div>
+
+    <div class="card" data-aos="zoom-in">
+        <h4>Average Score</h4>
+        <h2>{{ avg_score }}</h2>
+    </div>
+
+    <div class="card" data-aos="zoom-in">
+        <h4>Highest Score</h4>
+        <h2>{{ highest_score }}</h2>
+    </div>
+
+    <div class="card" data-aos="zoom-in">
+        <h4>Lowest Score</h4>
+        <h2>{{ lowest_score }}</h2>
+    </div>
+
+</div>
+
+{% if candidates|length > 0 %}
+
+<!-- CHARTS -->
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap:20px; margin-top:25px;">
+
+    <div class="card">
+        <h3>📊 Score Distribution</h3>
+        <canvas id="scoreChart"></canvas>
+    </div>
+
+    <div class="card">
+        <h3>🎯 Grade Distribution</h3>
+        <canvas id="gradeChart"></canvas>
+    </div>
+
+</div>
+
+{% endif %}
+
+<!-- TABLE -->
+<div class="card" style="margin-top:25px;">
+    <h2>🏆 Candidate Rankings</h2>
+
+    {% if candidates|length == 0 %}
+        <p>No candidates yet</p>
+    {% else %}
+
+    <div style="overflow-x:auto;">
+    <table style="width:100%;">
+
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Score</th>
+                <th>Grade</th>
+                <th>Recommendation</th>
+                <th>AI Feedback</th>
+                <th>Explain</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for candidate in candidates %}
+        <tr>
+
+            <td>{{ loop.index }}</td>
+
+            <td><strong>{{ candidate[0] }}</strong></td>
+
+            <!-- PROGRESS BAR -->
+            <td>
+                <div style="background:#1e293b; border-radius:8px;">
+                    <div style="width:{{ candidate[1] }}%; background:#3b82f6; color:white; padding:4px;">
+                        {{ candidate[1] }}%
+                    </div>
+                </div>
+            </td>
+
+            <!-- GRADE -->
+            <td>
+                <span class="badge grade-{{ candidate[2]|replace('+','plus') }}">
+                    {{ candidate[2] }}
+                </span>
+            </td>
+
+            <td>{{ candidate[4] }}</td>
+
+            <td style="font-size:13px;">{{ candidate[3] }}</td>
+
+            <!-- COLLAPSIBLE -->
+            <td>
+                <button onclick="toggleExplain({{ loop.index }})">View</button>
+                <div id="exp{{ loop.index }}" style="display:none; font-size:12px;">
+                    {{ candidate[5] }}
+                </div>
+            </td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- ACTIONS -->
+<div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
+    <a href="/upload/{{ job_id }}"><button>➕ Add</button></a>
+    <a href="/export/{{ job_id }}"><button>⬇ Export</button></a>
+    <a href="/delete-job/{{ job_id }}"><button style="background:red;">🗑 Delete</button></a>
+</div>
+
+<!-- JS -->
+<script>
+
+// SEARCH 🔥
+document.getElementById("search").addEventListener("keyup", function() {
+    let val = this.value.toLowerCase();
+    document.querySelectorAll("tbody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(val) ? "" : "none";
+    });
+});
+
+// TOGGLE EXPLAIN
+function toggleExplain(id){
+    let el = document.getElementById("exp"+id);
+    el.style.display = el.style.display === "none" ? "block" : "none";
+}
+
+// CHARTS
+{% if candidates|length > 0 %}
+new Chart(document.getElementById('scoreChart'), {
+    type: 'bar',
+    data: {
+        labels: [{% for c in candidates %}"{{ c[0] }}",{% endfor %}],
+        datasets: [{
+            data: [{% for c in candidates %}{{ c[1] }},{% endfor %}],
+            backgroundColor: '#3b82f6'
+        }]
+    }
+});
+
+new Chart(document.getElementById('gradeChart'), {
+    type: 'doughnut',
+    data: {
+        labels: [{% for g,c in grade_counts.items() %}"{{ g }}",{% endfor %}],
+        datasets: [{
+            data: [{% for g,c in grade_counts.items() %}{{ c }},{% endfor %}]
+        }]
+    }
+});
+{% endif %}
+
+</script>
+
+{% endblock %}
